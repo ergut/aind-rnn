@@ -40,12 +40,29 @@ def cleaned_text(text):
 ### TODO: fill out the function below that transforms the input text and window-size into a set of input/output pairs for use with our RNN model
 def window_transform_text(text, window_size, step_size):
     # containers for input/output pairs
-    inputs = []
-    outputs = []
 
+    # Initially I assumed step_size output at a time.
+    # my_range = range(0, len(text)-window_size-step_size, step_size) 
+    # outputs = [text[k+window_size:k+window_size+step_size] for k in my_range]
+    # However I realized that we still output a single character
+    my_range = range(0, len(text)-window_size, step_size) 
+    outputs = [text[k+window_size] for k in my_range]
+    inputs = [text[k:k+window_size] for k in my_range]
     return inputs,outputs
+
+
 
 # TODO build the required RNN model: 
 # a single LSTM hidden layer with softmax activation, categorical_crossentropy loss 
 def build_part2_RNN(window_size, num_chars):
-    pass
+    """ 
+    - layer 1 should be an LSTM module with 200 hidden units --> note this should have input_shape = (window_size, num_chars)
+    - layer 2 should be a linear module, fully connected, with num_chars hidden units
+    - layer 3 should be a softmax activation (since we are solving a multiclass classification) Use the categorical_crossentropy loss
+    """
+    model = Sequential([
+                LSTM(200, input_shape=(window_size,num_chars)),
+                Dense(num_chars, activation='softmax')
+        ])
+
+    return model
